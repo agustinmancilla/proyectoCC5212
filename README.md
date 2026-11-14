@@ -11,9 +11,14 @@ Construimos un grafo de subreddits conectados por audiencia compartida, a partir
 ```
 .
 ├── README.md
-└── spark/
-    ├── prep.py     # Paso 1: pares (autor, subreddit) distintos y filtrados
-    └── edges.py    # Paso 2: self-join, Jaccard y grafo k-NN para Giraph
+├── spark/
+│   ├── prep.py     # Paso 1: pares (autor, subreddit) distintos y filtrados
+│   └── edges.py    # Paso 2: self-join, Jaccard y grafo k-NN para Giraph
+└── giraph/         # Paso 3: PageRank y Label Propagation (proyecto mdp-giraph del Lab 8)
+    ├── build.xml
+    ├── correr_giraph.sh
+    ├── datos/juguete.tsv
+    └── src/org/mdp/hadoop/...
 ```
 
 ## Requisitos
@@ -106,6 +111,34 @@ spark-submit --master spark://cluster-01:7077 --total-executor-cores 4 --executo
 | `giraph-knn/` | TSV `origen\tdestino` | Grafo dirigido: cada subreddit apunta a sus `K` más similares. Entrada de PageRank. |
 | `giraph-und/` | TSV `origen\tdestino` | Mismo grafo con cada arista en ambos sentidos. Entrada de Label Propagation. |
 
+
+
+### Paso 3: Giraph, PageRank y Label Propagation
+
+El proyecto Java está en `giraph/` y parte del proyecto `mdp-giraph` del Laboratorio 8 (mismas clases de entrada y salida, mismo `build.xml`). Las clases nuevas son:
+
+| Clase | Qué hace |
+|---|---|
+| `cli/LabelPropagation` | LPA sincrónico con ids `Text`. Superstep 0: cada subreddit toma su nombre como etiqueta. Luego adopta la etiqueta más frecuente entre la suya y las de sus vecinos; en empate gana la menor. |
+| `pr/LabelPropagationMaster` | Cuenta cuántos vértices cambian en cada superstep (queda en el log del job) y detiene el cómputo cuando ya nadie cambia. Tope de 20 supersteps por si el LPA oscila. |
+| `cli/LPARunner` | Igual que `PageRankRunner`, pero lanza `LabelPropagation`. |
+
+**Compilar:** copiar en `giraph/lib/` los 4 JAR de `lib/` del Laboratorio 8 (no se suben al repo por tamaño) y correr `ant` en `giraph/`. Queda `giraph/dist/mdp-giraph.jar`, que se copia al servidor con `scp -P 220`.
+
+**Ejecutar** (`giraph/correr_giraph.sh` tiene todo en orden, partiendo por el grafo de juguete):
+
+```bash
+B=/uhadoop2026/projects/grupo11
+# PageRank sobre el k-NN dirigido
+hadoop jar mdp-giraph.jar PageRankRunner $B/giraph-knn $B/pagerank 4
+hadoop jar mdp-giraph.jar SortByRank -D mapreduce.job.reduces=1 $B/pagerank $B/pagerank-s
+# Label Propagation sobre el grafo no dirigido
+hadoop jar mdp-giraph.jar LPARunner $B/giraph-und $B/lpa 4
+```
+
+Entrada: los TSV `origen\tdestino` de `edges.py` (leídos con `TextNullTextEdgeInputFormat`). Salida: `subreddit\trank` en `pagerank/` y `subreddit\tetiqueta` en `lpa/`.
+
+**Prueba con grafo de juguete** (`giraph/datos/juguete.tsv`, dos triángulos unidos por `c–d`): lo esperado es `a, b, c → a` y `d, e, f → d`, convergiendo en el superstep 2.
 
 
 ---
