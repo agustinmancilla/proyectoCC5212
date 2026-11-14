@@ -17,12 +17,12 @@ hadoop jar $JAR LPARunner $B/juguete $B/lpa-juguete 1
 hdfs dfs -cat $B/lpa-juguete/part* | sort
 
 # 1) PageRank sobre el k-NN dirigido (clase del lab 8, sin cambios)
-time hadoop jar $JAR PageRankRunner $B/giraph-knn $B/pagerank $W
+time hadoop jar $JAR PageRankRunner $B/grafo/giraph-knn $B/pagerank $W
 hadoop jar $JAR SortByRank -D mapreduce.job.reduces=1 $B/pagerank $B/pagerank-s
 hdfs dfs -cat $B/pagerank-s/part* | head -30
 
 # 2) Label Propagation sobre el grafo no dirigido
-time hadoop jar $JAR LPARunner $B/giraph-und $B/lpa $W
+time hadoop jar $JAR LPARunner $B/grafo/giraph-und $B/lpa $W
 
 # Comunidades más grandes (subreddit \t etiqueta)
 hdfs dfs -cat $B/lpa/part* | cut -f2 | sort | uniq -c | sort -rn | head -20
