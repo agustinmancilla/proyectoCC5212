@@ -9,9 +9,14 @@ Construimos un grafo de subreddits conectados por audiencia compartida, a partir
 ```
 .
 ├── README.md
-└── spark/
-    ├── prep.py     # Paso 1: pares (autor, subreddit) distintos y filtrados
-    └── edges.py    # Paso 2: self-join, Jaccard y grafo k-NN para Giraph
+├── spark/
+│   ├── prep.py     # Paso 1: pares (autor, subreddit) distintos y filtrados
+│   └── edges.py    # Paso 2: self-join, Jaccard y grafo k-NN para Giraph
+└── giraph/         # Paso 3: PageRank y Label Propagation (proyecto mdp-giraph del Lab 8)
+    ├── build.xml
+    ├── correr_giraph.sh
+    ├── datos/juguete.tsv
+    └── src/org/mdp/hadoop/...
 ```
 
 ## Requisitos
