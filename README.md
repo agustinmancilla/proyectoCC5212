@@ -2,7 +2,7 @@
 
 Construimos un grafo de subreddits conectados por audiencia compartida, a partir de un mes de comentarios de Reddit. Sobre ese grafo, Apache Giraph detecta comunidades (Label Propagation) e identifica los subreddits más centrales (PageRank). Con Spark se calcula además qué tan aislada está cada comunidad del resto.
 
-> **Estado (14/11/2026):** preprocesamiento, grafo y Giraph (PageRank y Label Propagation) ejecutados sobre el mes completo. Pendiente: métricas de aislamiento (`metrics.py`) y mapa en Gephi.
+> **Estado (20/11/2026):** pipeline completo ejecutado sobre el mes completo: preprocesamiento, grafo, Giraph (PageRank y Label Propagation), métricas de aislamiento (`metrics.py`) y mapas (`mapas.py`).
 
 
 
@@ -13,15 +13,27 @@ Construimos un grafo de subreddits conectados por audiencia compartida, a partir
 ├── README.md
 ├── spark/
 │   ├── prep.py     # Paso 1: pares (autor, subreddit) distintos y filtrados
-│   └── edges.py    # Paso 2: self-join, Jaccard y grafo k-NN para Giraph
-└── giraph/         # Paso 3: PageRank y Label Propagation (proyecto mdp-giraph del Lab 8)
-    ├── build.xml           # compila y arma dist/mdp-giraph.jar con ant
-    ├── correr_giraph.sh    # comandos del clúster en orden
-    ├── datos/juguete.tsv   # grafo de prueba
-    └── src/org/mdp/hadoop/
-        ├── cli/            # PageRank, LabelPropagation, sus runners y SortByRank
-        ├── io/             # formato de entrada (TSV origen\tdestino) y de salida
-        └── pr/             # masters con los agregadores de PageRank y LPA
+│   ├── edges.py    # Paso 2: self-join, Jaccard y grafo k-NN para Giraph
+│   └── metrics.py  # Paso 4: aislamiento de comunidades y exportación a CSV
+├── giraph/         # Paso 3: PageRank y Label Propagation (proyecto mdp-giraph del Lab 8)
+│   ├── build.xml           # compila y arma dist/mdp-giraph.jar con ant
+│   ├── correr_giraph.sh    # comandos del clúster en orden
+│   ├── datos/juguete.tsv   # grafo de prueba
+│   └── src/org/mdp/hadoop/
+│       ├── cli/            # PageRank, LabelPropagation, sus runners y SortByRank
+│       ├── io/             # formato de entrada (TSV origen\tdestino) y de salida
+│       └── pr/             # masters con los agregadores de PageRank y LPA
+├── viz/
+│   └── mapas.py    # Paso 5: mapas a partir de los CSV de metrics.py
+└── resultados/     # salidas de los pasos 4 y 5
+    ├── nodes.csv
+    ├── edges.csv
+    ├── comunidades.csv
+    ├── enlaces_comunidades.csv
+    ├── metrics.log
+    ├── mapa_subreddits.png
+    ├── mapa_destacado.png
+    └── mapa_comunidades.png
 ```
 
 ## Requisitos
@@ -29,6 +41,7 @@ Construimos un grafo de subreddits conectados por audiencia compartida, a partir
 - Hadoop HDFS
 - Apache Spark con PySpark (`spark-submit`)
 - Apache Giraph 1.3 y Apache Ant (Java 8) para compilar `giraph/`; los 4 JAR de `giraph/lib/` se copian desde el Laboratorio 8 (no se suben al repo por tamaño)
+- Para los mapas: Python 3 con `networkx`, `matplotlib`, `scipy` y `pandas`
 
 ## Datos
 
@@ -148,6 +161,77 @@ Entrada: los TSV `origen\tdestino` de `edges.py`, leídos con `TextNullTextEdgeI
 
 **Prueba con grafo de juguete** (`giraph/datos/juguete.tsv`, dos triángulos unidos por `c–d`): resultado `a, b, c → a` y `d, e, f → d`, igual al esperado.
 
+### Paso 4: `metrics.py`, aislamiento de comunidades y exportación
+
+```bash
+spark-submit --master spark://cluster-01:7077 --total-executor-cores 4 --executor-memory 2g \
+  metrics.py $B
+```
+
+Lee `grafo/aristas/`, `grafo/giraph-und/`, `pagerank/` y `lpa/` desde `$B`, los une por nombre de subreddit, y escribe en `$B/resultados/` cuatro carpetas, cada una con un solo CSV con encabezado. Solo lee esas carpetas y crea `resultados/`; no modifica nada más. Al final imprime comprobaciones (nodos, aristas y comunidades que deben calzar con los pasos anteriores) y la tabla de comunidades ordenada por `frac_knn`.
+
+| Carpeta | Columnas | Contenido |
+|---|---|---|
+| `nodes/` | `Id, Label, comunidad, pagerank, n_autores` | Un subreddit por fila |
+| `edges/` | `Source, Target, Weight, Type` | Conexiones del grafo k-NN, cada una una sola vez. `Weight` es el Jaccard. |
+| `comunidades/` | `Id, Label, n_subreddits, frac_knn, esperada_knn, frac_autores, esperada_autores, top_subreddits` | Una comunidad por fila. `Id` es la etiqueta de LPA, `Label` su miembro con mayor PageRank y `top_subreddits` sus 5 miembros con mayor PageRank. |
+| `enlaces_comunidades/` | `Source, Target, Weight, autores_compartidos, Type` | Conexiones entre comunidades. `Weight` es el número de aristas k-NN que las unen. |
+
+**Criterio de aislamiento.** Para cada comunidad se mide qué fracción de su volumen de conexiones queda dentro de ella, `2·I / (2·I + E)` (`I`: conexiones internas, `E`: las que salen; equivale a 1 − conductancia), de dos formas:
+
+- `frac_knn`: sobre el grafo k-NN, cada arista vale 1.
+- `frac_autores`: sobre los 1,4 millones de pares de `aristas/`, cada par pesado por sus autores compartidos.
+
+`esperada_*` es la fracción del volumen total del grafo que tiene la comunidad, es decir, su fracción interna si las conexiones se repartieran al azar.
+
+**Medida para el aislamiento** Se usa el exceso por autores: `frac_autores − esperada_autores`, debido a que:
+
+- **`frac_knn` no sirve para medir aislamiento** Label Propagation armó las comunidades sobre el grafo k-NN agrupando subreddits que están muy conectados entre sí. Si después medimos en ese mismo grafo cuántas conexiones quedan dentro de cada comunidad, el resultado va a salir alto casi siempre, porque el algoritmo las formó justamente así. Por eso `frac_knn` la usamos solo para comprobar que LPA encontró comunidades bien definidas.
+- **`frac_autores` sí sirve**, porque se calcula sobre el otro grafo, el de todos los pares de subreddits que comparten autores (1,4 millones), y no solo los 10 vecinos que usó LPA. Así medimos el aislamiento con información que el algoritmo no vio.
+- **Hay que restarle lo esperado**, porque una comunidad grande tiene muchas conexiones internas solo por ser grande. Por ejemplo, en los *defaults* el 48 % de las conexiones queda adentro, pero por su tamaño ya se esperaba un 41 %. Lo que de verdad indica aislamiento es la diferencia entre ambos valores.
+- **Restamos en vez de dividir** porque la división da números enormes en comunidades chicas, que tienen un valor esperado casi cero (una de 14 subreddits llega a 61 veces lo esperado). La resta tampoco es perfecta, porque favorece un poco a las comunidades grandes. Por eso los rankings solo comparan comunidades de **20 o más subreddits**, y en las tablas mostramos también `frac_autores` y `esperada_autores` por separado.
+
+El exceso se calcula restando dos columnas de `comunidades.csv`.
+
+Los CSV se bajan del clúster con:
+
+```bash
+H=/uhadoop2026/projects/grupo11/resultados
+for t in nodes edges comunidades enlaces_comunidades; do hdfs dfs -getmerge $H/$t $t.csv; done
+```
+
+y quedan en `resultados/` de este repositorio, junto con `metrics.log` (la salida del script).
+
+### Paso 5: `mapas.py`, visualización
+
+En un PC, desde la raíz del repositorio:
+
+```bash
+pip install networkx matplotlib scipy pandas
+python viz/mapas.py resultados/
+```
+
+Lee los CSV del paso 4 y genera tres imágenes en `resultados/` (tarda unos 3–4 minutos, casi todo en calcular las posiciones):
+
+| Imagen | Qué muestra |
+|---|---|
+| `mapa_subreddits.png` | Los 2.695 subreddits. Color = comunidad (las 15 más grandes, con los temas de la tabla de Label Propagation), tamaño = PageRank |
+| `mapa_destacado.png` | Las mismas posiciones, con seis comunidades destacadas y el resto en gris |
+| `mapa_comunidades.png` | Una burbuja por comunidad. Tamaño = n.º de subreddits, color = exceso por autores (`frac_autores − esperada_autores`), líneas = los 3 vínculos más fuertes de cada comunidad |
+
+Las posiciones se calculan con ForceAtlas2 (`networkx`) **sin pesos**: el Jaccard es muy chico (0,01–0,3) y, con pesos, la atracción casi no actúa y las comunidades no se separan. La disposición puede salir rotada o reflejada si se vuelve a generar; solo las distancias entre grupos tienen significado.
+
+Comunidades destacadas en `mapa_destacado.png` (diccionario `DESTACADAS` de `mapas.py`):
+
+| Comunidad | Criterio |
+|---|---|
+| *Defaults* | Contiene a los 10 subreddits con más PageRank |
+| Reddit general | La más grande (273 subreddits) |
+| SRSMeta | La más aislada (mayor exceso por autores) |
+| Contenido adulto (NSFW) | Segunda por exceso, casi empatada con SRSMeta, y la más separada en el k-NN |
+| MapPorn | La menos aislada (menor exceso y menor `frac_knn` entre las de 20 o más subreddits) |
+| Política | La comunidad comentada en la sección de Label Propagation |
+
 
 ## Resultados con el mes completo (octubre de 2012)
 
@@ -238,21 +322,58 @@ Comunidades más grandes. El tema se asignó a mano a partir de sus 5 miembros c
 
 **Política.** `politics`, `worldnews` y `atheism` quedan en una comunidad de 26 subreddits junto a `AdviceAnimals` (el núcleo de los *defaults*). Los subreddits de política de nicho forman otra comunidad aparte, de 24, que mezcla todos los lados: `Republican`, `Conservative`, `conservatives`, `prolife` y `Romney` junto a `democrats`, `Liberal`, `progressive`, `obama`, `GreenParty` y `GaryJohnson`, además de `PoliticalDiscussion`, `NeutralPolitics`, `moderatepolitics` y otros. `Libertarian` cae con `Anarchism` y `Christianity` con el bloque de debate religioso (`AdviceAtheists`).
 
+### Aislamiento de comunidades (`metrics.py`)
+
+Comprobaciones del log: 2.695 subreddits, 19.379 aristas k-NN y 118 comunidades, iguales a los pasos anteriores, sin valores faltantes. Hay 2.293 pares de comunidades conectados entre sí.
+
+Las 5 comunidades más aisladas y las 5 menos aisladas según el exceso por autores, entre las 44 con 20 o más subreddits (tabla completa en `resultados/comunidades.csv`):
+
+| | Comunidad | Subreddits | Exceso | `frac_autores` | Esperada | `frac_knn` |
+|---|---|---|---|---|---|---|
+| 1 | SRSMeta | 32 | 0,136 | 0,140 | 0,004 | 0,671 |
+| 2 | Contenido adulto (NSFW) | 97 | 0,136 | 0,147 | 0,012 | 0,819 |
+| 3 | Comunidad gay masculina | 22 | 0,127 | 0,130 | 0,003 | 0,747 |
+| 4 | soccer | 22 | 0,101 | 0,105 | 0,004 | 0,780 |
+| 5 | Linux y programación | 45 | 0,082 | 0,088 | 0,007 | 0,659 |
+| … | | | | | | |
+| 40 | philosophy | 25 | 0,022 | 0,028 | 0,006 | 0,374 |
+| 41 | LetsTalkMusic | 27 | 0,021 | 0,025 | 0,004 | 0,423 |
+| 42 | ArchitecturePorn | 23 | 0,020 | 0,022 | 0,002 | 0,467 |
+| 43 | europe | 27 | 0,018 | 0,020 | 0,002 | 0,372 |
+| 44 | MapPorn | 21 | 0,012 | 0,017 | 0,005 | 0,317 |
+
+- **Validación:** en el k-NN, entre el 30 % y el 82 % de las conexiones de cada comunidad quedan dentro de ella, así que las comunidades de LPA están bien definidas.
+- **Aislamiento:** por autores compartidos es bajo (exceso entre 0,012 y 0,136). Las comunidades tienen identidad propia, pero su audiencia también circula por el resto de Reddit; los *defaults* concentran el 41 % del volumen de autores compartidos.
+- **Las más aisladas son nichos** de un tema o afición específica; **las menos aisladas** reúnen temas transversales. La comunidad de política queda en el puesto 34 de 44 (exceso 0,036).
+
+### Mapas (`mapas.py`)
+
+![Mapa de subreddits](resultados/mapa_subreddits.png)
+
+![Comunidades destacadas](resultados/mapa_destacado.png)
+
+![Mapa de comunidades](resultados/mapa_comunidades.png)
+
+
 ---
 
 ## Limitaciones
 
 - Comentar en dos subreddits no implica pertenecer a ambos.
 - La detección de bots es una heurística simple (nombre terminado en "bot").
-- Los autores en más de 50 subreddits no entran al self-join, así que el Jaccard queda algo subestimado para los subreddits grandes.
+- Los autores en más de 50 subreddits se descartan antes de calcular tanto la intersección como el tamaño de cada subreddit, así que el Jaccard se calcula solo sobre autores presentes en 50 subreddits o menos.
 - LPA no es determinista entre implementaciones y, en su versión sincrónica, puede oscilar: 8 subreddits no se estabilizaron al llegar al tope de 20 supersteps.
 - Las etiquetas de LPA son nombres de miembros, no temas; el tema de cada comunidad se asignó a mano.
+- Compartir audiencia no indica cómo interactúan los usuarios: no distingue acuerdo de conflicto entre subreddits.
+- Algunos subreddits chicos quedan en comunidades sin relación temática por pocas conexiones (por ejemplo, ciudades como `Lubbock` o `Pensacola`).
+- `frac_knn` se mide sobre el mismo grafo con el que Label Propagation formó las comunidades, así que es alta por construcción; por eso el aislamiento se mide con `frac_autores`, sobre un grafo que LPA no usó.
+- El exceso por autores no es del todo independiente del tamaño de la comunidad (favorece algo a las grandes, y la razón, a las chicas); por eso los rankings se limitan a comunidades de 20 o más subreddits.
 
 ## Pendiente
 
 - [x] `prep.py` y `edges.py` sobre el mes completo (`MIN_AUT=100`)
 - [x] PageRank en Giraph sobre `giraph-knn`
 - [x] Label Propagation en Giraph sobre `giraph-und`
-- [ ] Métricas de comunidades (tamaño y aislamiento) con `metrics.py`
-- [ ] Exportación de `nodes.csv` y `edges.csv` y mapa en Gephi
+- [x] Métricas de comunidades (tamaño y aislamiento) con `metrics.py`
+- [x] Exportación de `nodes.csv` y `edges.csv` y mapas con `mapas.py`
 - [ ] Opcional: repetir con septiembre y noviembre de 2012 y comparar el bloque político alrededor de la elección

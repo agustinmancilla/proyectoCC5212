@@ -1,0 +1,196 @@
+:: loading settings :: url = jar:file:/data/hadoop/spark-3.3.2-bin-hadoop2/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /data/2026/uhadoop/.ivy2/cache
+The jars for the packages stored in: /data/2026/uhadoop/.ivy2/jars
+com.datastax.spark#spark-cassandra-connector_2.11 added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-075a9bc7-aa0b-4324-ad42-5b522e2aac64;1.0
+	confs: [default]
+	found com.datastax.spark#spark-cassandra-connector_2.11;2.0.2 in spark-list
+	found com.twitter#jsr166e;1.1.0 in central
+	found commons-beanutils#commons-beanutils;1.9.3 in central
+	found commons-collections#commons-collections;3.2.2 in central
+	found org.joda#joda-convert;1.2 in central
+	found joda-time#joda-time;2.3 in central
+	found io.netty#netty-all;4.0.33.Final in central
+	found org.scala-lang#scala-reflect;2.11.8 in central
+:: resolution report :: resolve 707ms :: artifacts dl 24ms
+	:: modules in use:
+	com.datastax.spark#spark-cassandra-connector_2.11;2.0.2 from spark-list in [default]
+	com.twitter#jsr166e;1.1.0 from central in [default]
+	commons-beanutils#commons-beanutils;1.9.3 from central in [default]
+	commons-collections#commons-collections;3.2.2 from central in [default]
+	io.netty#netty-all;4.0.33.Final from central in [default]
+	joda-time#joda-time;2.3 from central in [default]
+	org.joda#joda-convert;1.2 from central in [default]
+	org.scala-lang#scala-reflect;2.11.8 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   8   |   0   |   0   |   0   ||   8   |   0   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-075a9bc7-aa0b-4324-ad42-5b522e2aac64
+	confs: [default]
+	0 artifacts copied, 8 already retrieved (0kB/15ms)
+26/11/20 07:03:48 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/11/20 07:03:51 INFO SparkContext: Running Spark version 3.3.2
+26/11/20 07:03:51 INFO ResourceUtils: ==============================================================
+26/11/20 07:03:51 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/11/20 07:03:51 INFO ResourceUtils: ==============================================================
+26/11/20 07:03:51 INFO SparkContext: Submitted application: G11-metrics
+26/11/20 07:03:51 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 2048, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/11/20 07:03:51 INFO ResourceProfile: Limiting resource is cpu
+26/11/20 07:03:51 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/11/20 07:03:51 INFO SecurityManager: Changing view acls to: uhadoop
+26/11/20 07:03:51 INFO SecurityManager: Changing modify acls to: uhadoop
+26/11/20 07:03:51 INFO SecurityManager: Changing view acls groups to: 
+26/11/20 07:03:51 INFO SecurityManager: Changing modify acls groups to: 
+26/11/20 07:03:51 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(uhadoop); groups with view permissions: Set(); users  with modify permissions: Set(uhadoop); groups with modify permissions: Set()
+26/11/20 07:03:52 INFO Utils: Successfully started service 'sparkDriver' on port 33207.
+26/11/20 07:03:53 INFO SparkEnv: Registering MapOutputTracker
+26/11/20 07:03:53 INFO SparkEnv: Registering BlockManagerMaster
+26/11/20 07:03:53 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/11/20 07:03:53 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/11/20 07:03:53 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/11/20 07:03:53 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-0163a254-e329-401b-b9a0-e659690f7dae
+26/11/20 07:03:53 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+26/11/20 07:03:53 INFO SparkEnv: Registering OutputCommitCoordinator
+26/11/20 07:03:53 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/com.datastax.spark_spark-cassandra-connector_2.11-2.0.2.jar at spark://cluster-01:33207/jars/com.datastax.spark_spark-cassandra-connector_2.11-2.0.2.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/com.twitter_jsr166e-1.1.0.jar at spark://cluster-01:33207/jars/com.twitter_jsr166e-1.1.0.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/commons-beanutils_commons-beanutils-1.9.3.jar at spark://cluster-01:33207/jars/commons-beanutils_commons-beanutils-1.9.3.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/org.joda_joda-convert-1.2.jar at spark://cluster-01:33207/jars/org.joda_joda-convert-1.2.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/joda-time_joda-time-2.3.jar at spark://cluster-01:33207/jars/joda-time_joda-time-2.3.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/io.netty_netty-all-4.0.33.Final.jar at spark://cluster-01:33207/jars/io.netty_netty-all-4.0.33.Final.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/org.scala-lang_scala-reflect-2.11.8.jar at spark://cluster-01:33207/jars/org.scala-lang_scala-reflect-2.11.8.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added JAR file:///data/2026/uhadoop/.ivy2/jars/commons-collections_commons-collections-3.2.2.jar at spark://cluster-01:33207/jars/commons-collections_commons-collections-3.2.2.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/com.datastax.spark_spark-cassandra-connector_2.11-2.0.2.jar at spark://cluster-01:33207/files/com.datastax.spark_spark-cassandra-connector_2.11-2.0.2.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/com.datastax.spark_spark-cassandra-connector_2.11-2.0.2.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/com.datastax.spark_spark-cassandra-connector_2.11-2.0.2.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/com.twitter_jsr166e-1.1.0.jar at spark://cluster-01:33207/files/com.twitter_jsr166e-1.1.0.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/com.twitter_jsr166e-1.1.0.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/com.twitter_jsr166e-1.1.0.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/commons-beanutils_commons-beanutils-1.9.3.jar at spark://cluster-01:33207/files/commons-beanutils_commons-beanutils-1.9.3.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/commons-beanutils_commons-beanutils-1.9.3.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/commons-beanutils_commons-beanutils-1.9.3.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/org.joda_joda-convert-1.2.jar at spark://cluster-01:33207/files/org.joda_joda-convert-1.2.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/org.joda_joda-convert-1.2.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/org.joda_joda-convert-1.2.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/joda-time_joda-time-2.3.jar at spark://cluster-01:33207/files/joda-time_joda-time-2.3.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/joda-time_joda-time-2.3.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/joda-time_joda-time-2.3.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/io.netty_netty-all-4.0.33.Final.jar at spark://cluster-01:33207/files/io.netty_netty-all-4.0.33.Final.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/io.netty_netty-all-4.0.33.Final.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/io.netty_netty-all-4.0.33.Final.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/org.scala-lang_scala-reflect-2.11.8.jar at spark://cluster-01:33207/files/org.scala-lang_scala-reflect-2.11.8.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/org.scala-lang_scala-reflect-2.11.8.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/org.scala-lang_scala-reflect-2.11.8.jar
+26/11/20 07:03:54 INFO SparkContext: Added file file:///data/2026/uhadoop/.ivy2/jars/commons-collections_commons-collections-3.2.2.jar at spark://cluster-01:33207/files/commons-collections_commons-collections-3.2.2.jar with timestamp 1795169031603
+26/11/20 07:03:54 INFO Utils: Copying /data/2026/uhadoop/.ivy2/jars/commons-collections_commons-collections-3.2.2.jar to /tmp/spark-488d817b-08b9-4e2b-b6c4-0614adc5d8fa/userFiles-a915d85f-4255-47c1-8197-447066684b57/commons-collections_commons-collections-3.2.2.jar
+26/11/20 07:03:54 INFO StandaloneAppClient$ClientEndpoint: Connecting to master spark://cluster-01:7077...
+26/11/20 07:03:54 INFO TransportClientFactory: Successfully created connection to cluster-01/10.10.10.11:7077 after 75 ms (0 ms spent in bootstraps)
+26/11/20 07:03:54 INFO StandaloneSchedulerBackend: Connected to Spark cluster with app ID app-20261120070354-0027
+26/11/20 07:03:54 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20261120070354-0027/0 on worker-20261113211129-10.10.10.11-33815 (10.10.10.11:33815) with 1 core(s)
+26/11/20 07:03:54 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 41721.
+26/11/20 07:03:54 INFO NettyBlockTransferService: Server created on cluster-01:41721
+26/11/20 07:03:54 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/11/20 07:03:54 INFO StandaloneSchedulerBackend: Granted executor ID app-20261120070354-0027/0 on hostPort 10.10.10.11:33815 with 1 core(s), 2.0 GiB RAM
+26/11/20 07:03:54 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20261120070354-0027/1 on worker-20261113211144-10.10.10.14-35579 (10.10.10.14:35579) with 1 core(s)
+26/11/20 07:03:54 INFO StandaloneSchedulerBackend: Granted executor ID app-20261120070354-0027/1 on hostPort 10.10.10.14:35579 with 1 core(s), 2.0 GiB RAM
+26/11/20 07:03:54 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20261120070354-0027/2 on worker-20261113211146-10.10.10.12-43187 (10.10.10.12:43187) with 1 core(s)
+26/11/20 07:03:54 INFO StandaloneSchedulerBackend: Granted executor ID app-20261120070354-0027/2 on hostPort 10.10.10.12:43187 with 1 core(s), 2.0 GiB RAM
+26/11/20 07:03:54 INFO StandaloneAppClient$ClientEndpoint: Executor added: app-20261120070354-0027/3 on worker-20261113211137-10.10.10.15-36519 (10.10.10.15:36519) with 1 core(s)
+26/11/20 07:03:54 INFO StandaloneSchedulerBackend: Granted executor ID app-20261120070354-0027/3 on hostPort 10.10.10.15:36519 with 1 core(s), 2.0 GiB RAM
+26/11/20 07:03:54 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, cluster-01, 41721, None)
+26/11/20 07:03:54 INFO BlockManagerMasterEndpoint: Registering block manager cluster-01:41721 with 434.4 MiB RAM, BlockManagerId(driver, cluster-01, 41721, None)
+26/11/20 07:03:54 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, cluster-01, 41721, None)
+26/11/20 07:03:54 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, cluster-01, 41721, None)
+26/11/20 07:03:54 INFO StandaloneAppClient$ClientEndpoint: Executor updated: app-20261120070354-0027/0 is now RUNNING
+26/11/20 07:03:55 INFO StandaloneAppClient$ClientEndpoint: Executor updated: app-20261120070354-0027/1 is now RUNNING
+26/11/20 07:03:55 INFO StandaloneSchedulerBackend: SchedulerBackend is ready for scheduling beginning after reached minRegisteredResourcesRatio: 0.0
+Subreddits (nodos):                2695
+  sin PageRank (debe ser 0):       0
+  sin n_autores (debe ser 0):      0
+Aristas k-NN no dirigidas:         19379
+  sin peso (debe ser 0):           0
+  lineas en giraph-und / 2:        19379.0
+Comunidades:                       118
+Suma de n_subreddits:              2695
+Pares de comunidades conectadas:   2293
+
+Comunidades de 10 o mas subreddits, de la mas aislada a la menos (frac_knn):
++---------------------+------------+--------+------------+------------+----------------+--------------------------------------------------------------------------------+
+|Label                |n_subreddits|frac_knn|esperada_knn|frac_autores|esperada_autores|top_subreddits                                                                  |
++---------------------+------------+--------+------------+------------+----------------+--------------------------------------------------------------------------------+
+|Boobies              |97          |0.819   |0.038       |0.147       |0.012           |Boobies|milf|Amateur|curvy|ass                                                  |
+|soccer               |22          |0.78    |0.008       |0.105       |0.004           |soccer|footballmanagergames|MLS|FIFA|Fifa13                                     |
+|gaymersgonewild      |22          |0.747   |0.008       |0.13        |0.003           |gaymersgonewild|GaybrosGoneWild|gaybrosgonemild|GaymersGoneMild|gaymers         |
+|edmproduction        |38          |0.738   |0.015       |0.085       |0.004           |edmproduction|DJs|electrohouse|electronicmusic|Beatmatch                        |
+|gallopfrey           |19          |0.724   |0.008       |0.094       |0.003           |gallopfrey|MLPLounge|mylittlepony|mylittlefortress|MyLittleSupportGroup         |
+|eldertrees           |22          |0.697   |0.008       |0.054       |0.003           |eldertrees|StonerProTips|StonerEngineering|saplings|mflb                        |
+|hockey               |34          |0.674   |0.012       |0.058       |0.006           |hockey|canada|nhl|CanadaPolitics|EA_NHL                                         |
+|Diablo               |10          |0.672   |0.003       |0.091       |0.002           |Diablo|Diablo3Wizards|D3T|d3loot|diablo3                                        |
+|SRSMeta              |32          |0.671   |0.014       |0.14        |0.004           |SRSMeta|SRSBusiness|SRSRedditDrama|SRSFunny|SRSFeminism                         |
+|CircLoLjerk          |13          |0.662   |0.004       |0.051       |0.001           |CircLoLjerk|bestoftribunal|LeagueOfMemes|LeagueofLegendsMeta|summonerschool     |
+|linux                |45          |0.659   |0.019       |0.088       |0.007           |linux|linuxquestions|linux4noobs|programming|linux_gaming                       |
+|starcraft            |16          |0.657   |0.005       |0.056       |0.005           |starcraft|Destiny|AllThingsTerran|StarcraftCirclejerk|DotA2                     |
+|Autos                |69          |0.646   |0.026       |0.084       |0.011           |Autos|Justrolledintotheshop|carporn|cars|forza                                  |
+|bicycling            |15          |0.633   |0.006       |0.06        |0.003           |bicycling|Bikeporn|bicycletouring|MTB|FixedGearBicycle                          |
+|xxfitness            |49          |0.629   |0.018       |0.077       |0.015           |xxfitness|Fitness|weightroom|swoleacceptance|fitnesscirclejerk                  |
+|DebateReligion       |33          |0.628   |0.012       |0.048       |0.007           |DebateReligion|TrueAtheism|skeptic|DebateAnAtheist|DebateAChristian             |
+|ainbow               |26          |0.617   |0.01        |0.076       |0.004           |ainbow|transgender|lgbt|genderqueer|asktransgender                              |
+|TrueReddit           |273         |0.616   |0.112       |0.185       |0.141           |TrueReddit|news|offbeat|SubredditDrama|gifs                                     |
+|unitedkingdom        |16          |0.611   |0.006       |0.055       |0.003           |unitedkingdom|ukpolitics|BritishTV|britishproblems|london                       |
+|apple                |19          |0.61    |0.007       |0.053       |0.006           |apple|mac|ipad|cordcutters|applehelp                                            |
+|hardware             |24          |0.601   |0.01        |0.064       |0.007           |hardware|buildapcsales|buildapc|gamingpc|pcgaming                               |
+|gadgets              |25          |0.596   |0.01        |0.058       |0.009           |gadgets|Android|windows|AndroidQuestions|software                               |
+|WeAreTheMusicMakers  |65          |0.595   |0.022       |0.063       |0.008           |WeAreTheMusicMakers|audioengineering|Guitar|Bass|musictheory                    |
+|Cricket              |19          |0.59    |0.006       |0.052       |0.002           |Cricket|AFL|australia|Aleague|nrl                                               |
+|todayilearned        |26          |0.588   |0.014       |0.479       |0.41            |todayilearned|AdviceAnimals|videos|WTF|politics                                 |
+|webdev               |24          |0.588   |0.01        |0.064       |0.004           |webdev|web_design|webdesign|freelance|graphic_design                            |
+|Mommit               |17          |0.579   |0.006       |0.076       |0.002           |Mommit|breastfeeding|beyondthebump|TryingForABaby|BabyBumps                     |
+|pokemon              |85          |0.577   |0.03        |0.07        |0.016           |pokemon|TheLastAirbender|PS3|xbox360|zelda                                      |
+|ExposurePorn         |11          |0.564   |0.004       |0.04        |0.003           |ExposurePorn|photography|itookapicture|postprocessing|photoshop                 |
+|community            |75          |0.563   |0.028       |0.064       |0.023           |community|television|PandR|thewalkingdead|arresteddevelopment                   |
+|gonewildcurvy        |14          |0.558   |0.006       |0.074       |0.001           |gonewildcurvy|GoneWildPlus|workgonewild|gonewildaudio|asstastic                 |
+|Psychonaut           |20          |0.558   |0.008       |0.046       |0.003           |Psychonaut|askdrugs|LSD|Drugs|DrugNerds                                         |
+|Art                  |15          |0.552   |0.005       |0.028       |0.002           |Art|learnart|ArtCrit|IDAP|artstore                                              |
+|sysadmin             |21          |0.55    |0.008       |0.051       |0.007           |sysadmin|techsupportgore|netsec|techsupport|cableporn                           |
+|martialarts          |10          |0.547   |0.003       |0.031       |0.002           |martialarts|MMA|judo|MuayThai|wrestling                                         |
+|Pets                 |42          |0.545   |0.015       |0.04        |0.006           |Pets|dogpictures|cats|dogs|lookatmydog                                          |
+|Games                |125         |0.543   |0.045       |0.087       |0.027           |Games|truegaming|GameDeals|gamernews|Minecraft                                  |
+|Frugal               |48          |0.538   |0.02        |0.061       |0.019           |Frugal|DIY|Cooking|food|BuyItForLife                                            |
+|anime                |22          |0.532   |0.008       |0.048       |0.002           |anime|awwnime|Animesuggest|visualnovels|manga                                   |
+|baseball             |52          |0.531   |0.02        |0.086       |0.011           |baseball|OaklandAthletics|motorcitykitties|sports|Braves                        |
+|TwoXChromosomes      |88          |0.528   |0.034       |0.084       |0.019           |TwoXChromosomes|AskWomen|TrollXChromosomes|MakeupAddiction|femalefashionadvice  |
+|Random_Acts_Of_Amazon|17          |0.527   |0.006       |0.029       |0.003           |Random_Acts_Of_Amazon|RandomKindness|secretsanta|Random_Acts_Of_Pizza|Assistance|
+|Filmmakers           |14          |0.525   |0.005       |0.039       |0.001           |Filmmakers|TrueFilm|vfx|editors|AfterEffects                                    |
+|worldbuilding        |18          |0.523   |0.006       |0.052       |0.004           |worldbuilding|rpg|DnD|lfg|characterdrawing                                      |
+|Cascadia             |11          |0.522   |0.004       |0.027       |0.001           |Cascadia|Seahawks|SoundersFC|Seattle|Washington                                 |
+|PoliticalDiscussion  |24          |0.518   |0.009       |0.042       |0.006           |PoliticalDiscussion|progressive|Republican|GaryJohnson|Conservative             |
+|Survival             |25          |0.503   |0.009       |0.039       |0.002           |Survival|CampingandHiking|camping|Ultralight|preppers                           |
+|comicbooks           |22          |0.501   |0.009       |0.042       |0.006           |comicbooks|youngjustice|arrow|batman|DCcomics                                   |
+|cowboys              |13          |0.497   |0.004       |0.031       |0.002           |cowboys|Texans|texas|Dallas|FortWorth                                           |
+|DetroitRedWings      |11          |0.492   |0.003       |0.028       |0.001           |DetroitRedWings|detroitlions|Michigan|Detroit|uofm                              |
+|Patriots             |15          |0.486   |0.005       |0.029       |0.001           |Patriots|BostonBruins|redsox|bostonceltics|boston                               |
+|Steam                |24          |0.483   |0.009       |0.065       |0.015           |Steam|skyrim|tf2|tf2trade|TF2fashionadvice                                      |
+|redditrequest        |17          |0.48    |0.008       |0.037       |0.002           |redditrequest|MetaHub|antisrs|SRSsucks|ideasfortheadmins                        |
+|Firearms             |49          |0.475   |0.017       |0.063       |0.006           |Firearms|guns|CCW|GunPorn|ar15                                                  |
+|relationships        |18          |0.473   |0.007       |0.042       |0.006           |relationships|relationship_advice|dating_advice|confession|offmychest           |
+|ArchitecturePorn     |23          |0.467   |0.009       |0.022       |0.002           |ArchitecturePorn|InfrastructurePorn|VillagePorn|AnimalPorn|SkyPorn              |
+|books                |15          |0.46    |0.005       |0.028       |0.004           |books|Fantasy|writing|printSF|literature                                        |
+|nfl                  |35          |0.459   |0.013       |0.058       |0.009           |nfl|fantasyfootball|Madden|nfffffffluuuuuuuuuuuu|CHIBears                       |
+|oliviawilde          |10          |0.458   |0.003       |0.011       |0.001           |oliviawilde|starlets|EmmaStone|AlisonBrie|MilaKunis                             |
+|California           |19          |0.452   |0.006       |0.026       |0.002           |California|lakers|LAlist|LosAngeles|Chargers                                    |
+|homestead            |30          |0.449   |0.012       |0.031       |0.003           |homestead|collapse|SelfSufficiency|gardening|Permaculture                       |
+|AskEngineers         |28          |0.447   |0.01        |0.037       |0.004           |AskEngineers|engineering|electronics|darknetplan|robotics                       |
+|AskMen               |17          |0.441   |0.006       |0.03        |0.008           |AskMen|OkCupid|seduction|GetMotivated|howtonotgiveafuck                         |
+|Economics            |29          |0.428   |0.011       |0.043       |0.007           |Economics|environment|business|economy|personalfinance                          |
+|LetsTalkMusic        |27          |0.423   |0.009       |0.025       |0.004           |LetsTalkMusic|vinyl|listentothis|postrock|VinylCollectors                       |
+|biology              |19          |0.422   |0.007       |0.024       |0.002           |biology|math|AskAcademia|neuro|GradSchool                                       |
+|Libertarian          |25          |0.409   |0.01        |0.04        |0.005           |Libertarian|Anarcho_Capitalism|alltheleft|socialism|Anarchism                   |
+|MilitaryPorn         |12          |0.398   |0.004       |0.035       |0.002           |MilitaryPorn|Military|aviation|flightsim|modelmakers                            |
+|florida              |10          |0.393   |0.003       |0.026       |0.001           |florida|Miami|buccaneers|ufl|GNV                                                |
+|philosophy           |25          |0.374   |0.009       |0.028       |0.006           |philosophy|Meditation|psychology|Health|Buddhism                                |
+|europe               |27          |0.372   |0.01        |0.02        |0.002           |europe|languagelearning|IWantOut|solotravel|AskACountry                         |
+|TEFL                 |11          |0.365   |0.003       |0.028       |0.001           |TEFL|ChineseLanguage|China|taiwan|shanghai                                      |
+|CastleTV             |12          |0.36    |0.005       |0.013       |0.001           |CastleTV|OnceUponATime|grimm|alphas|revolutionNBC                               |
+|worldpolitics        |25          |0.355   |0.01        |0.028       |0.004           |worldpolitics|ronpaul|conspiracy|EndlessWar|EnoughObamaSpam                     |
+|firefly              |11          |0.34    |0.004       |0.014       |0.002           |firefly|startrek|BSG|dune|tolkienfans                                           |
+|louie                |12          |0.338   |0.004       |0.011       |0.001           |louie|opieandanthony|JoeRogan|sportsbook|nin                                    |
+|MapPorn              |21          |0.317   |0.008       |0.017       |0.005           |MapPorn|CityPorn|EarthPorn|HumanPorn|RoomPorn                                   |
+|geek                 |11          |0.297   |0.005       |0.02        |0.008           |geek|scifi|entertainment|comics|humor                                           |
++---------------------+------------+--------+------------+------------+----------------+--------------------------------------------------------------------------------+
+
